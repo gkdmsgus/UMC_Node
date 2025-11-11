@@ -1,4 +1,4 @@
-import { responseFromMissionChallenge } from "../dtos/mission.dto.js";
+import { responseFromMissionChallenge, responseFromStoreMissions, responseFromMyMissions, responseFromMissionComplete } from "../dtos/mission.dto.js";
 import * as missionRepository from "../repositories/mission.repository.js";
 
 export const challengeMission = async (data) => {
@@ -30,5 +30,23 @@ export const challengeMission = async (data) => {
   } catch (error) {
     throw error;
   }
+};
+// 가게의 미션 목록 조회
+export const listStoreMissions = async (storeId, cursor) => {
+  const missions = await missionRepository.getStoreMissions(storeId, cursor);
+  return responseFromStoreMissions(missions);
+};
+
+// 내가 진행 중인 미션 목록 조회
+export const listMyMissions = async (userId, cursor) => {
+  const userMissions = await missionRepository.getMyChallengingMissions(userId, cursor);
+  return responseFromMyMissions(userMissions);
+};
+
+// 미션을 완료로 변경
+export const completeMission = async (userMissionId) => {
+  const updated = await missionRepository.updateMissionStatus(userMissionId, 'complete');
+  const userMission = await missionRepository.getMissionChallenge(userMissionId);
+  return responseFromMissionComplete(userMission);
 };
  
