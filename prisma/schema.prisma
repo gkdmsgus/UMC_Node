@@ -1,0 +1,115 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  email         String   @unique(map: "email") @db.VarChar(255)
+  name          String   @db.VarChar(100)
+  gender        String   @db.VarChar(15)
+  birth         DateTime @db.Date
+  address       String   @db.VarChar(255)
+  detailAddress String?  @map("detail_address") @db.VarChar(255)
+  phoneNumber   String   @map("phone_number") @db.VarChar(15)
+
+  userFavorCategories UserFavorCategory[]
+  reviews             Review[]
+  userMissions        UserMission[]
+
+  @@map("user")
+}
+
+model FoodCategory {
+  id   Int    @id @default(autoincrement())
+  name String @map("f_category_name") @db.VarChar(100)
+
+  userFavorCategories UserFavorCategory[]
+
+  @@map("food_category")
+}
+
+model UserFavorCategory {
+  id             Int          @id @default(autoincrement()) @map("uf_category_id")
+  user           User         @relation(fields: [userId], references: [id])
+  userId         Int          @map("user_id")
+  foodCategory   FoodCategory @relation(fields: [foodCategoryId], references: [id])
+  foodCategoryId Int          @map("f_category_id")
+
+  @@index([foodCategoryId], map: "f_category_id")
+  @@index([userId], map: "user_id")
+  @@map("user_favor_category")
+}
+model Store {
+  id      Int      @id @default(autoincrement())
+  name    String   @db.VarChar(100)
+  regionId Int?    @map("region_id")
+  address String?  @db.VarChar(255)
+  
+  region  Region?  @relation(fields: [regionId], references: [id])
+  reviews Review[]
+  missions Mission[]
+
+  @@map("store")
+}
+
+model Region {
+  id    Int     @id @default(autoincrement())
+  name  String  @db.VarChar(100)
+  
+  stores Store[]
+
+  @@map("region")
+}
+
+model Review {
+  id       Int      @id @default(autoincrement())
+  storeId  Int      @map("store_id")
+  userId   Int      @map("user_id")
+  rating   Float
+  content  String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  store    Store    @relation(fields: [storeId], references: [id])
+  user     User     @relation(fields: [userId], references: [id])
+
+  @@index([storeId])
+  @@index([userId])
+  @@map("review")
+}
+model Mission {
+  id          Int      @id @default(autoincrement())
+  storeId     Int      @map("store_id")
+  reward      Int
+  deadline    DateTime
+  missionSpec String   @map("mission_spec") @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+  
+  store        Store         @relation(fields: [storeId], references: [id])
+  userMissions UserMission[]
+  
+  @@index([storeId])
+  @@map("mission")
+}
+
+model UserMission {
+  id        Int      @id @default(autoincrement())
+  userId    Int      @map("user_id")
+  missionId Int      @map("mission_id")
+  status    String   @default("challenging") @db.VarChar(20)
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  user    User    @relation(fields: [userId], references: [id])
+  mission Mission @relation(fields: [missionId], references: [id])
+  
+  @@index([userId])
+  @@index([missionId])
+  @@map("user_mission")
+}

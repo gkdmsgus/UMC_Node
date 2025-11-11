@@ -21,4 +21,33 @@ export const bodyToReview = (body) => {
       createdAt: review[0].created_at
     };
   };
-   
+  export const responseFromReviews = (reviews) => {
+    return {
+      data: reviews.map(review => ({
+        id: review.id,
+        storeName: review.store.name,
+        userName: review.user.name,
+        rating: review.rating,
+        content: review.content,
+        createdAt: review.createdAt,
+      })),
+      pagination: {
+        cursor: reviews.length ? reviews[reviews.length - 1].id : null,
+      },
+    };
+  };
+  // 내가 작성한 리뷰 목록 응답
+export const responseFromMyReviews = (reviews) => {
+  return {
+    data: reviews.map(review => ({
+      id: review.id,
+      storeName: review.store.name,
+      rating: review.rating,
+      content: review.content,
+      createdAt: review.createdAt,
+    })),
+    pagination: {
+      cursor: reviews.length ? reviews[reviews.length - 1].id : null,
+    },
+  };
+};

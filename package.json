@@ -5,13 +5,14 @@
   "description": "UMC 테스트 프로젝트",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js",
-    "dev": "nodemon --exec node src/index.js"
-  },
+  "test": "echo \"Error: no test specified\" && exit 1",
+  "start": "node src/index.js",
+  "dev": "nodemon -e js,json,prisma --exec \"prisma generate && node src/index.js\""
+},
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^6.19.0",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
@@ -20,6 +21,7 @@
     "mysql2": "^3.15.2"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "prisma": "^6.19.0"
   }
 }

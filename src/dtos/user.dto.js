@@ -1,15 +1,12 @@
 export const responseFromUser = ({ user, preferences }) => {
+  const preferFoods = preferences.map(
+    (preference) => preference.foodCategory.name
+  );
+
   return {
     email: user.email,
     name: user.name,
-    gender: user.gender,
-    birth: user.birth,
-    address: user.address,
-    detailAddress: user.detailAddress,
-    phoneNumber: user.phoneNumber,
-    phoneNumber: user[0].phone_number,
-    // 비밀번호는 응답에서 제외
-    preferences: preferences
+    preferCategory: preferFoods,
   };
 };
 export const bodyToUser = (body) => {
