@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { responseFromUser } from "../dtos/user.dto.js";
+import { DuplicateUserEmailError } from "../errors.js";
 import {
   addUser,
   getUser,
@@ -21,11 +22,11 @@ export const userSignUp = async (data) => {
     address: data.address,
     detailAddress: data.detailAddress,
     phoneNumber: data.phoneNumber,
-    password: hashPassword(data.password), // 해싱된 비밀번호 저장
+    password: hashPassword(data.password),
   });
 
   if (joinUserId === null) {
-    throw new Error("이미 존재하는 이메일입니다.");
+    throw new DuplicateUserEmailError("이미 존재하는 이메일입니다.", data);
   }
 
   for (const preference of data.preferences) {
