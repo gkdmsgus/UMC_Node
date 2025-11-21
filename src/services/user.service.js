@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { responseFromUser } from "../dtos/user.dto.js";
-import { DuplicateUserEmailError } from "../errors.js";
+import { DuplicateUserEmailError } from "../errors/basic.error.js";
 import {
   addUser,
   getUser,

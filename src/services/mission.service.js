@@ -1,9 +1,8 @@
 import { responseFromMissionChallenge, responseFromStoreMissions, responseFromMyMissions, responseFromMissionComplete } from "../dtos/mission.dto.js";
-import { MissionNotFoundError, MissionAlreadyExistsError } from "../errors.js";
+import { MissionNotFoundError, MissionAlreadyExistsError } from "../errors/basic.error.js";
 import * as missionRepository from "../repositories/mission.repository.js";
 
 export const challengeMission = async (data) => {
-  // 미션 존재 확인
   const missionExists = await missionRepository.checkMissionExists(data.missionId);
   if (!missionExists) {
     throw new MissionNotFoundError(
@@ -12,7 +11,6 @@ export const challengeMission = async (data) => {
     );
   }
 
-  // 이미 도전 중인지 확인
   const isAlreadyChallenging = await missionRepository.checkAlreadyChallenging(
     data.userId, 
     data.missionId
@@ -24,7 +22,6 @@ export const challengeMission = async (data) => {
     );
   }
 
-  // 미션 도전 추가
   const challengeId = await missionRepository.addMissionChallenge({
     userId: data.userId,
     missionId: data.missionId
@@ -37,19 +34,16 @@ export const challengeMission = async (data) => {
   return responseFromMissionChallenge({ challenge, mission, user });
 };
 
-// 가게의 미션 목록 조회
 export const listStoreMissions = async (storeId, cursor) => {
   const missions = await missionRepository.getStoreMissions(storeId, cursor);
   return responseFromStoreMissions(missions);
 };
 
-// 내가 진행 중인 미션 목록 조회
 export const listMyMissions = async (userId, cursor) => {
   const userMissions = await missionRepository.getMyChallengingMissions(userId, cursor);
   return responseFromMyMissions(userMissions);
 };
 
-// 미션을 완료로 변경
 export const completeMission = async (userMissionId) => {
   const updated = await missionRepository.updateMissionStatus(userMissionId, 'complete');
   const userMission = await missionRepository.getMissionChallenge(userMissionId);

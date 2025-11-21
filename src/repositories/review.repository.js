@@ -1,6 +1,5 @@
 import { prisma } from "../db.config.js";
 
-// 가게 존재 확인
 export const checkStoreExists = async (storeId) => {
   const store = await prisma.store.findUnique({
     where: { id: storeId }
@@ -8,7 +7,6 @@ export const checkStoreExists = async (storeId) => {
   return store !== null;
 };
 
-// 리뷰 추가
 export const addReview = async (data) => {
   const created = await prisma.review.create({
     data: {
@@ -21,7 +19,6 @@ export const addReview = async (data) => {
   return created.id;
 };
 
-// 리뷰 조회
 export const getReview = async (reviewId) => {
   const review = await prisma.review.findUnique({
     where: { id: reviewId },
@@ -33,7 +30,6 @@ export const getReview = async (reviewId) => {
   return review;
 };
 
-// 가게 조회
 export const getStore = async (storeId) => {
   const store = await prisma.store.findUnique({
     where: { id: storeId }
@@ -41,7 +37,13 @@ export const getStore = async (storeId) => {
   return store;
 };
 
-// 가게의 모든 리뷰 조회 (커서 기반 페이지네이션)
+export const getUser = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId }
+  });
+  return user;
+};
+
 export const getAllStoreReviews = async (storeId, cursor) => {
   const reviews = await prisma.review.findMany({
     select: {
@@ -73,7 +75,7 @@ export const getAllStoreReviews = async (storeId, cursor) => {
 
   return reviews;
 };
-// 내가 작성한 리뷰 목록 조회 (커서 기반 페이지네이션)
+
 export const getMyReviews = async (userId, cursor) => {
   const reviews = await prisma.review.findMany({
     select: {
