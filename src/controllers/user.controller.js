@@ -33,50 +33,55 @@ export const handleUserSignUp = async (req, res, next) => {
         }
       }
     };
-    #swagger.responses[200] = {
-      description: "회원 가입 성공 응답",
-      content: {
-        "application/json": {
-          schema: {
-            type: "object",
-            properties: {
-              resultType: { type: "string", example: "SUCCESS" },
-              error: { type: "object", nullable: true, example: null },
-              success: {
-                type: "object",
-                properties: {
-                  email: { type: "string", example: "user@example.com" },
-                  name: { type: "string", example: "홍길동" },
-                  preferCategory: { 
-                    type: "array", 
-                    items: { type: "string" },
-                    example: ["한식", "중식", "일식"]
+   #swagger.responses[200] = {
+    description: "회원 가입 성공 응답",
+    content: {
+      "application/json": {
+        schema: {
+          allOf: [
+            { $ref: "#/components/schemas/SuccessResponse" },
+            {
+              type: "object",
+              properties: {
+                success: {
+                  type: "object",
+                  properties: {
+                    email: { type: "string", example: "user@example.com" },
+                    name: { type: "string", example: "홍길동" },
+                    preferCategory: { 
+                      type: "array", 
+                      items: { type: "string" },
+                      example: ["한식", "중식", "일식"]
+                    }
                   }
                 }
               }
             }
-          }
+          ]
         }
       }
-    };
+    }
+  };
     #swagger.responses[400] = {
       description: "회원 가입 실패 응답",
       content: {
         "application/json": {
           schema: {
-            type: "object",
-            properties: {
-              resultType: { type: "string", example: "FAIL" },
-              error: {
+            allOf: [
+              { $ref: "#/components/schemas/FailResponse" },
+              {
                 type: "object",
                 properties: {
-                  errorCode: { type: "string", example: "U001" },
-                  reason: { type: "string", example: "이미 존재하는 이메일입니다." },
-                  data: { type: "object" }
+                  error: {
+                    type: "object",
+                    properties: {
+                      errorCode: { type: "string", example: "U001" },
+                      reason: { type: "string", example: "이미 존재하는 이메일입니다." }
+                    }
+                  }
                 }
-              },
-              success: { type: "object", nullable: true, example: null }
-            }
+              }
+            ]
           }
         }
       }

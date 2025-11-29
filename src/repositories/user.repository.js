@@ -42,3 +42,17 @@ export const getUserPreferencesByUserId = async (userId) => {
 
   return preferences;
 };
+// 사용자 정보 업데이트
+export const updateUser = async (userId, data) => {
+  const updated = await prisma.user.update({
+    where: { id: userId },
+    data: data,
+  });
+  return updated.id;
+};
+
+// 이메일로 사용자 찾기
+export const getUserByEmail = async (email) => {
+  const user = await prisma.user.findFirst({ where: { email } });
+  return user;
+};
